@@ -9,7 +9,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "semver": "^7.3.5",
-    "zx": "^4.3.0"
+    "semver": "^7.3.5"
   }
 }

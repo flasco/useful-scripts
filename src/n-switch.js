@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
-const { $ } = require('zx');
 const semver = require('semver');
+const { spawn } = require('child_process');
 
 const versionMapping = {
   Argon: 4,
@@ -42,7 +42,7 @@ const start = async () => {
     const targetMajor = getCurrentMajor(nvmrcVer);
     if (targetMajor !== null) {
       const [major] = process.versions.node.split('.');
-      if (+major === +targetMajor) {
+      if (Number(major) === Number(targetMajor)) {
         // 如果是字母版本，就直接跳过，如果是数字版本，确认满足条件再跳过
         if (!nvmrcVer.includes('.') || semver.gte(nvmrcVer, process.versions.node)) {
           console.log(`n-switch: now use node v${process.versions.node}`);
@@ -53,7 +53,9 @@ const start = async () => {
 
     // 只有major相同且 nvmrc 版本低于当前版本才不更新
     console.log(`n-switch: auto-switching, ${process.versions.node} -> ${nvmrcVer}`);
-    await $`n auto`;
+    spawn('n', ['auto'], {
+      stdio: 'inherit',
+    });
   }
 };
 
