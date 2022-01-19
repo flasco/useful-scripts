@@ -42,10 +42,10 @@ const start = async () => {
     const targetMajor = getCurrentMajor(nvmrcVer);
     if (targetMajor !== null) {
       const [major] = process.versions.node.split('.');
-      if (major === targetMajor) {
+      if (+major === +targetMajor) {
         // 如果是字母版本，就直接跳过，如果是数字版本，确认满足条件再跳过
         if (!nvmrcVer.includes('.') || semver.gte(nvmrcVer, process.versions.node)) {
-          console.log('n-switch: nvmrc is already set to the latest version.');
+          console.log(`n-switch: now use node v${process.versions.node}`);
           return;
         }
       }
