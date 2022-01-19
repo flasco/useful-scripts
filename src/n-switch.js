@@ -18,6 +18,10 @@ const getCurrentMajor = nvmVer => {
     return null;
   }
 
+  if (!isNaN(+nvmVer)) {
+    return nvmVer;
+  }
+
   if (nvmVer.includes('.')) {
     return nvmVer.split('.')[0];
   }
@@ -39,7 +43,6 @@ const start = async () => {
   const nvmrcVer = fs.existsSync(nvmrcPath) ? fs.readFileSync(nvmrcPath, 'utf8') : '';
 
   if (!nvmrcVer) {
-    console.log(`n-switch: now use node v${process.versions.node}`);
     return;
   }
 
