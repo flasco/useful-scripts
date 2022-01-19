@@ -13,16 +13,14 @@ const versionMapping = {
   Gallium: 16,
 };
 
+const isNumberVer = ver => !isNaN(Number(ver)) || ver.includes('.');
+
 const getCurrentMajor = nvmVer => {
   if (!nvmVer) {
     return null;
   }
 
-  if (!isNaN(+nvmVer)) {
-    return nvmVer;
-  }
-
-  if (nvmVer.includes('.')) {
+  if (isNumberVer(nvmVer)) {
     return nvmVer.split('.')[0];
   }
 
@@ -38,9 +36,18 @@ const getCurrentMajor = nvmVer => {
   return major;
 };
 
+const versionFormat = ver => {
+  const vers = ver.split('.');
+  const nVer = [];
+  for (let i = 0; i < 3; i++) {
+    nVer.push(vers[i] || 0);
+  }
+  return nVer.join('.');
+};
+
 const start = async () => {
   const nvmrcPath = path.join(process.cwd(), '.nvmrc');
-  const nvmrcVer = fs.existsSync(nvmrcPath) ? fs.readFileSync(nvmrcPath, 'utf8') : '';
+  const nvmrcVer = fs.existsSync(nvmrcPath) ? fs.readFileSync(nvmrcPath, 'utf8').trim() : '';
 
   if (!nvmrcVer) {
     return;
@@ -51,7 +58,7 @@ const start = async () => {
     const [major] = process.versions.node.split('.');
     if (Number(major) === Number(targetMajor)) {
       // 如果是字母版本，就直接跳过，如果是数字版本，确认满足条件再跳过
-      if (!nvmrcVer.includes('.') || semver.gte(nvmrcVer, process.versions.node)) {
+      if (!isNumberVer(nvmrcVer) || semver.cmp(versionFormat(nvmrcVer), '<=', process.versions.node)) {
         console.log(`n-switch: now use node v${process.versions.node}`);
         return;
       }
